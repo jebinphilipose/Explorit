@@ -1,0 +1,43 @@
+html {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    -webkit-box-sizing: inherit;
+    -moz-box-sizing: inherit;
+    box-sizing: inherit;
+}
+
+header, main, footer {
+    padding-left: 300px;
+}
+
+div.collection {
+    max-height: 300px;
+    overflow: scroll;
+    overflow-x: hidden;
+    border: none;
+}
+
+div.collection a {
+    font-size: 1.4rem;
+}
+
+#map {
+    height: calc(100vh - 64px);
+    width: 100%;
+}
+
+@media only screen and (max-width : 992px) {
+    header, main, footer {
+        padding-left: 0;
+    }
+}
+
+@media only screen and (max-width : 767px) {
+    #map {
+        height: calc(100vh - 56px);
+    }
+}
