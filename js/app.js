@@ -3,6 +3,7 @@ var foursquareClientSecret = "GHW25MTPGC5AJWLMDXQEUJTX0KJE3DAW0IEIXR43BQRLA4EV";
 var googleKey = "AIzaSyC3aeY6RPu35aJQ5z3KInmv_l9W_A-pIuA";
 var map, largeInfoWindow, bounds, flag;
 
+// Knockout ViewModel
 var ViewModel = function(loc) {
     var self = this;
     this.categoryList = ko.observableArray(['Food', 'Coffee', 'Shopping', 'Nightlife']);
@@ -26,6 +27,7 @@ var ViewModel = function(loc) {
         });
         bounds.extend(marker.position);
     };
+    // Opens up infoWindow, sets marker Animation and adds content to it
     this.openInfoWindow = function (marker) {
             if(flag && flag.getAnimation() !== null) {
                 flag.setAnimation(null);
@@ -39,11 +41,13 @@ var ViewModel = function(loc) {
                 marker.setAnimation(null);
             });
     };
+    // Hides all venue markers when called
     this.hideAllMarkers = function() {
         for (var i = 0; i < self.venueList().length; i++) {
             self.venueList()[i].setMap(null);
         }
     };
+    // Makes request to Foursquare for searched location and category
     this.makeRequest = function(lat, lng, cat) {
         loc.lat = lat;
         loc.lng = lng;
@@ -51,6 +55,7 @@ var ViewModel = function(loc) {
         self.venueList([]);
         self.requestFoursquare(cat);
     };
+    // Geocodes the address in the search box
     this.search = function() {
         var c = $('#categoryList').val();
         var l = $('#location').val();
@@ -90,6 +95,7 @@ var ViewModel = function(loc) {
     this.requestFoursquare();
 };
 
+// Map Callback function
 function initMap() {
     var defaultLocation = {lat: 28.5355, lng: 77.3910};
     var locationAutoComplete = new google.maps.places.Autocomplete(document.getElementById('location'));
@@ -107,6 +113,7 @@ function initMap() {
     );
 }
 
+// Makes a map for the location
 function map(location) {
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 13,
