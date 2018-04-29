@@ -1,7 +1,7 @@
 var foursquareClientId = "1CMSRWMY3NG253YZ0Z1PMD0Z3KWB1HQHB1CUN2N3E2TOXO4J";
 var foursquareClientSecret = "GHW25MTPGC5AJWLMDXQEUJTX0KJE3DAW0IEIXR43BQRLA4EV";
 var googleKey = "AIzaSyC3aeY6RPu35aJQ5z3KInmv_l9W_A-pIuA";
-var map, largeInfoWindow, bounds;
+var map, largeInfoWindow, bounds, flag;
 
 var ViewModel = function(loc) {
     var self = this;
@@ -27,16 +27,17 @@ var ViewModel = function(loc) {
         bounds.extend(marker.position);
     };
     this.openInfoWindow = function (marker) {
-        // Check to make sure the infoWindow is not already opened on this marker.
-        if (largeInfoWindow.marker != marker) {
+            if(flag && flag.getAnimation() !== null) {
+                flag.setAnimation(null);
+            }
             largeInfoWindow.marker = marker;
             largeInfoWindow.setContent('<div><strong>' + marker.name + '</strong></div><br>' + '<div>' + "Rating: " + marker.rating + '</div><br>' + "Address: " + marker.address + '</div>');
             largeInfoWindow.open(map, marker);
-            // Make sure the marker property is cleared if the infoWindow is closed.
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            flag = marker;
             largeInfoWindow.addListener('closeclick',function(){
-                largeInfoWindow.setMarker = null;
+                marker.setAnimation(null);
             });
-        }
     };
     this.hideAllMarkers = function() {
         for (var i = 0; i < self.venueList().length; i++) {
