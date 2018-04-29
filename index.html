@@ -7,10 +7,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/style.css">
     <title>Explorit</title>
 </head>
 <body>
+    <!--Navbar-->
     <header>
         <nav>
             <div class="nav-wrapper">
@@ -20,23 +22,19 @@
         </nav>
     </header>
     <main>
+        <!--Sidebar-->
         <ul class="sidenav sidenav-fixed" id="mobile-demo">
             <div class="container" style="width: 100%">
                 <h4 class="center-align">Search</h4>
                 <div class="row">
                     <div class="input-field col s12">
-                        <input id="location" type="text" class="validate">
+                        <input id="location" type="text" class="validate" placeholder="">
                         <label for="location">Enter your Location</label>
                     </div>
                 </div>
                 <div class = "row">
                     <div class="input-field col s9">
-                        <select>
-                            <option value="1">Option 1</option>
-                            <option value="2">Option 2</option>
-                            <option value="3">Option 3</option>
-                            <option value="4">Option 4</option>
-                        </select>
+                        <select data-bind="options: categoryList"></select>
                         <label>Category</label>
                     </div>
                     <div class="col s3">
@@ -58,17 +56,15 @@
                 </div>
             </div>
         </ul>
+        <!--Map-->
         <div id="map"></div>
     </main>
-    <script>
-        var elem = document.querySelector('.sidenav');
-        var instance = M.Sidenav.init(elem, {});
-
-        var elem = document.querySelector('select');
-        var instance = M.FormSelect.init(elem, {});
-    </script>
-    <script src="js/app.js"></script>
     <script src='js/knockout-3.4.2.js'></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3aeY6RPu35aJQ5z3KInmv_l9W_A-pIuA&callback=initMap"></script>
+    <script src="js/app.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyC3aeY6RPu35aJQ5z3KInmv_l9W_A-pIuA&callback=initMap"></script>
+    <script>
+        var elem1 = document.querySelector('.sidenav');
+        var instance1 = M.Sidenav.init(elem1, {});
+    </script>
 </body>
 </html>
