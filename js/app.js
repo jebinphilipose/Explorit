@@ -1,11 +1,11 @@
-var foursquare_client_id = "1CMSRWMY3NG253YZ0Z1PMD0Z3KWB1HQHB1CUN2N3E2TOXO4J";
-var foursquare_client_secret = "GHW25MTPGC5AJWLMDXQEUJTX0KJE3DAW0IEIXR43BQRLA4EV";
+var foursquareClientId = "1CMSRWMY3NG253YZ0Z1PMD0Z3KWB1HQHB1CUN2N3E2TOXO4J";
+var foursquareClientSecret = "GHW25MTPGC5AJWLMDXQEUJTX0KJE3DAW0IEIXR43BQRLA4EV";
+var googleKey = "AIzaSyC3aeY6RPu35aJQ5z3KInmv_l9W_A-pIuA";
 var map, largeInfoWindow, bounds;
 
 var ViewModel = function(loc) {
     var self = this;
-    this.categoryList = ko.observableArray(['All', 'Food', 'Coffee', 'Shopping', 'Nightlife']);
-    this.currentCategory = ko.observable();
+    this.categoryList = ko.observableArray(['Food', 'Coffee', 'Shopping', 'Nightlife']);
     this.venueList = ko.observableArray([]);
     // Function to add venues retreived from the API to the list and make its markers on the map
     this.addVenue = function (item) {
@@ -38,21 +38,55 @@ var ViewModel = function(loc) {
             });
         }
     };
+    this.hideAllMarkers = function() {
+        for (var i = 0; i < self.venueList().length; i++) {
+            self.venueList()[i].setMap(null);
+        }
+    };
+    this.makeRequest = function(lat, lng, cat) {
+        loc.lat = lat;
+        loc.lng = lng;
+        self.hideAllMarkers();
+        self.venueList([]);
+        self.requestFoursquare(cat);
+    };
+    this.search = function() {
+        var c = $('#categoryList').val();
+        var l = $('#location').val();
+        l = l.replace(/ /g, "+");
+        var url = `https://maps.googleapis.com/maps/api/geocode/json?address=${l}&key=${googleKey}`;
+        $.ajax({
+            url: url,
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                var lat = response.results[0].geometry.location.lat;
+                var lng = response.results[0].geometry.location.lng;
+                self.makeRequest(lat, lng, c);
+            },
+            error: function() {
+                window.alert('Failed to load Google Geocode API! Check your network or firewall');
+            }        
+        });
+    };
     // Make an ajax request to Foursquare
-    $.ajax({
-        url: `https://api.foursquare.com/v2/venues/explore?limit=10&range=3000&ll=${loc.lat},${loc.lng}&client_id=${foursquare_client_id}&client_secret=${foursquare_client_secret}&v=20180429&query=`,
-        method: 'GET',
-        dataType: 'json',
-        success: function(result) {
-            bounds = new google.maps.LatLngBounds();
-            var venues = result.response.groups[0].items;
-            venues.forEach(self.addVenue);
-            map.fitBounds(bounds);
-        },
-        error: function() {
-            window.alert('Failed to load Foursquare data! Check your network or firewall');
-        }        
-    })
+    this.requestFoursquare = function (cat='') {
+        bounds = new google.maps.LatLngBounds();
+        $.ajax({
+            url: `https://api.foursquare.com/v2/venues/explore?limit=10&range=3000&ll=${loc.lat},${loc.lng}&client_id=${foursquareClientId}&client_secret=${foursquareClientSecret}&v=20180429&query=` + cat,
+            method: 'GET',
+            dataType: 'json',
+            success: function(result) {
+                var venues = result.response.groups[0].items;
+                venues.forEach(self.addVenue);
+                map.fitBounds(bounds);
+            },
+            error: function() {
+                window.alert('Failed to load Foursquare data! Check your network or firewall');
+            }        
+        });
+    };
+    this.requestFoursquare();
 };
 
 function initMap() {
