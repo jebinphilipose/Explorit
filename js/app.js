@@ -55,31 +55,50 @@ var ViewModel = function(loc) {
         self.venueList([]);
         self.requestFoursquare(cat);
     };
-    // Geocodes the address in the search box
+    // Uses the value of new location or category and displays venues accordingly
     this.search = function() {
         var c = $('#categoryList').val();
         var l = $('#location').val();
-        l = l.replace(/ /g, "+");
-        var url = `https://maps.googleapis.com/maps/api/geocode/json?address=${l}&key=${googleKey}`;
-        $.ajax({
-            url: url,
-            method: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                var lat = response.results[0].geometry.location.lat;
-                var lng = response.results[0].geometry.location.lng;
-                self.makeRequest(lat, lng, c);
-            },
-            error: function() {
-                window.alert('Failed to load Google Geocode API! Check your network or firewall');
-            }        
-        });
+        if(c === '' && l === '') {
+            self.hideAllMarkers();
+            self.venueList([]);
+            self.initialMarkers();
+        }
+        else if(l === '' && c!== '') {
+            self.makeRequest(loc.lat, loc.lng, c);
+        }
+        else {
+            l = l.replace(/ /g, "+");
+            var url = `https://maps.googleapis.com/maps/api/geocode/json?address=${l}&key=${googleKey}`;
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    var lat = response.results[0].geometry.location.lat;
+                    var lng = response.results[0].geometry.location.lng;
+                    if(c === '') {
+                        loc.lat = lat;
+                        loc.lng = lng;
+                        self.hideAllMarkers();
+                        self.venueList([]);
+                        self.initialMarkers();
+                    }
+                    else {
+                        bounds = new google.maps.LatLngBounds();
+                        self.makeRequest(lat, lng, c);
+                    }
+                },
+                error: function() {
+                    window.alert('Failed to load Google Geocode API! Check your network or firewall');
+                }        
+            });
+        }
     };
     // Make an ajax request to Foursquare
-    this.requestFoursquare = function (cat='') {
-        bounds = new google.maps.LatLngBounds();
+    this.requestFoursquare = function (cat) {
         $.ajax({
-            url: `https://api.foursquare.com/v2/venues/explore?limit=10&range=3000&ll=${loc.lat},${loc.lng}&client_id=${foursquareClientId}&client_secret=${foursquareClientSecret}&v=20180429&query=` + cat,
+            url: `https://api.foursquare.com/v2/venues/explore?limit=5&range=3000&ll=${loc.lat},${loc.lng}&client_id=${foursquareClientId}&client_secret=${foursquareClientSecret}&v=20180429&query=` + cat,
             method: 'GET',
             dataType: 'json',
             success: function(result) {
@@ -92,7 +111,12 @@ var ViewModel = function(loc) {
             }        
         });
     };
-    this.requestFoursquare();
+    // Create all markers
+    this.initialMarkers = function () {
+        bounds = new google.maps.LatLngBounds();
+        self.categoryList().forEach(self.requestFoursquare);
+    };
+    this.initialMarkers();
 };
 
 // Map Callback function

@@ -29,12 +29,12 @@
                 <div class="row">
                     <div class="input-field col s12">
                         <input id="location" type="text" class="validate" placeholder="">
-                        <label for="location">Enter your Location</label>
+                        <label for="location">Enter your Location (Empty for current)</label>
                     </div>
                 </div>
                 <div class = "row">
                     <div class="input-field col s9">
-                        <select data-bind="options: categoryList" id="categoryList"></select>
+                        <select data-bind="options: categoryList, optionsCaption: 'Select All'" id="categoryList"></select>
                         <label>Category</label>
                     </div>
                     <div class="col s3">
