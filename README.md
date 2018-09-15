@@ -1,4 +1,4 @@
-# Explorit
+# Explorit ([Live](https://jebinphilipose.github.io/Explorit/))
 
 ## Project Overview
 
