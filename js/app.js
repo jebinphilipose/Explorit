@@ -14,13 +14,9 @@ var ViewModel = function(loc) {
             position: {lat: item.venue.location.lat, lng: item.venue.location.lng},
             map: map,
             name: item.venue.name,
-            rating: item.venue.rating,
             address: item.venue.location.formattedAddress,
             animation: google.maps.Animation.DROP
         });
-        if(!item.venue.hasOwnProperty('rating')) {
-            marker.rating = 'Not Available!';
-        }
         self.venueList.push(marker);
         marker.addListener('click', function() {
             self.openInfoWindow(this);
@@ -33,7 +29,7 @@ var ViewModel = function(loc) {
                 flag.setAnimation(null);
             }
             largeInfoWindow.marker = marker;
-            largeInfoWindow.setContent('<div><strong>' + marker.name + '</strong></div><br>' + '<div>' + "Rating: " + marker.rating + '</div><br>' + "Address: " + marker.address + '</div>');
+            largeInfoWindow.setContent('<div><strong>' + marker.name + '</strong></div><br>' + "Address: " + marker.address + '</div>');
             largeInfoWindow.open(map, marker);
             marker.setAnimation(google.maps.Animation.BOUNCE);
             flag = marker;
