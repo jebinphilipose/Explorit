@@ -31,9 +31,8 @@ div.collection a {
 }
 
 #credit {
-    position: absolute;
-    bottom: 10%;
-    left: 22%;
+    text-align: center;
+    opacity: 0;
 }
 
 @media only screen and (max-width : 992px) {

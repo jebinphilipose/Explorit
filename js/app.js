@@ -101,6 +101,7 @@ var ViewModel = function(loc) {
                 var venues = result.response.groups[0].items;
                 venues.forEach(self.addVenue);
                 map.fitBounds(bounds);
+                $('#credit').css('opacity', '1');
             },
             error: function() {
                 window.alert('Failed to load Foursquare data! Check your network or firewall');
